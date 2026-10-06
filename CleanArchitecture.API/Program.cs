@@ -3,7 +3,8 @@ using CleanArchitecture.Domain.Interface;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-
+using MediatR;
+using CleanArchitecture.Application.Features.Blogs.Commands;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +14,11 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 
 builder.Services.AddTransient<IBlogRepository, BlogRepository>();
 builder.Services.AddTransient<IBlogService , BlogService>();
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(
+        typeof(CreateBlogCommand).Assembly);
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
