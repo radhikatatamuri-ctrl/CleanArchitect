@@ -1,10 +1,13 @@
+using Amazon;
+using Amazon.SimpleNotificationService;
+using CleanArchitecture.Application.Features.Blogs.Commands;
+using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Domain.Interface;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using MediatR;
-using CleanArchitecture.Application.Features.Blogs.Commands;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +15,7 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BlogBbContext") ??
     throw new InvalidOperationException("Connection string 'BlogBbContext' not found.")));
 
+builder.Services.AddScoped<IBlogDbContext, BlogDbContext>();
 builder.Services.AddTransient<IBlogRepository, BlogRepository>();
 builder.Services.AddTransient<IBlogService , BlogService>();
 builder.Services.AddMediatR(cfg =>
@@ -19,7 +23,20 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(
         typeof(CreateBlogCommand).Assembly);
 });
+builder.Services.AddAWSService<
+    Amazon.SimpleNotificationService
+    .IAmazonSimpleNotificationService>();
+builder.Services.AddSingleton<IAmazonSimpleNotificationService>(
+    sp =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
 
+        return new AmazonSimpleNotificationServiceClient(
+            config["AWS:AccessKey"],
+            config["AWS:SecretKey"],
+            RegionEndpoint.APSoutheast2);
+    });
+builder.Services.AddScoped<ISnsService, SnsService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

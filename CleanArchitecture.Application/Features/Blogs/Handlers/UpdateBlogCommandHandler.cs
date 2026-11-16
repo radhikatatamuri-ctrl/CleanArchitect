@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.Application.Features.Blogs.Commands;
 using CleanArchitecture.Domain.Enitites;
 using CleanArchitecture.Domain.Interface;
+using CleanArchitecture.Domain.ValueObjects;
 using MediatR;
 
 namespace CleanArchitecture.Application.Features.Blogs.Handlers
@@ -20,15 +21,11 @@ namespace CleanArchitecture.Application.Features.Blogs.Handlers
             UpdateBlogCommand request,
             CancellationToken cancellationToken)
         {
-            var blog = new Blog
-            {
-                Id=request.blogId,
-                Name = request.Name,
-                Description = request.Description,
-                Author = request.Author,
-                ImageUrl = request.ImageUrl
-            };
-
+                var blog = new Blog(
+        new BlogName(request.Name),
+        request.Description,
+        request.Author,
+        request.ImageUrl);
             return await _repository.UpdateAsync(request.blogId, blog);
         }
     }

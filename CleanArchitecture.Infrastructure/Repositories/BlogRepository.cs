@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Domain.Enitites;
 using CleanArchitecture.Domain.Interface;
+using CleanArchitecture.Domain.ValueObjects;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,33 +28,59 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
         public async Task<int> DeleteAsync(int id)
         {
-            return await _blogDbContext.Blogs
-                  .Where(model => model.Id == id)
-                  .ExecuteDeleteAsync();
+            var blog = await _blogDbContext.Blogs
+    .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (blog == null)
+                return 0;
+
+            _blogDbContext.Blogs.Remove(blog);
+
+            return await _blogDbContext.SaveChangesAsync();
         }
 
         public async Task<List<Blog>> GetAllAsync()
         {
-            return await _blogDbContext.Blogs.ToListAsync();
+            return await _blogDbContext.Blogs.Include(b => b.Comments).ToListAsync();
         }
 
         public async Task<Blog> GetByIdAsync(int id)
         {
-            return await _blogDbContext.Blogs.AsNoTracking()
+            return await _blogDbContext.Blogs
+                        .Include(x => x.Comments)
                .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<int> UpdateAsync(int id, Blog blog)
         {
-            return await _blogDbContext.Blogs
+            /*return await _blogDbContext.Blogs
                   .Where(model => model.Id == id)
                   .ExecuteUpdateAsync(setters => setters
                     .SetProperty(m => m.Id, blog.Id)
-                    .SetProperty(m => m.Name, blog.Name)
+                    .SetProperty(m => m.Name.Value, blog.Name.Value)
                     .SetProperty(m => m.Description, blog.Description)
                     .SetProperty(m => m.Author, blog.Author)
                     .SetProperty(m => m.ImageUrl, blog.ImageUrl)
-                  );
+                  );*/
+      
+            var existingBlog = await _blogDbContext.Blogs
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingBlog == null)
+                return 0;
+
+            existingBlog.Update(
+                new BlogName(blog.Name.Value),
+                blog.Description,
+                blog.Author,
+                blog.ImageUrl);
+
+            return await _blogDbContext.SaveChangesAsync();
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _blogDbContext.SaveChangesAsync();
         }
     }
-}
+    }
+

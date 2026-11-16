@@ -14,5 +14,7 @@ namespace CleanArchitecture.Domain.Interface
         Task<Blog> CreateAsync(Blog blog);
         Task<int> UpdateAsync(int id, Blog blog);
         Task<int> DeleteAsync(int id);
+
+        Task SaveChangesAsync();
     }
 }

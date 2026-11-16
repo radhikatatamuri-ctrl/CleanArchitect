@@ -2,6 +2,7 @@
 using CleanArchitecture.Application.Features.Blogs.Events;
 using CleanArchitecture.Domain.Enitites;
 using CleanArchitecture.Domain.Interface;
+using CleanArchitecture.Domain.ValueObjects;
 using MediatR;
 
 namespace CleanArchitecture.Application.Features.Blogs.Handlers
@@ -23,21 +24,18 @@ namespace CleanArchitecture.Application.Features.Blogs.Handlers
             CreateBlogCommand request,
             CancellationToken cancellationToken)
         {
-            var blog = new Blog
-            {   Id=request.Id,
-                Name = request.Name,
-                Description = request.Description,
-                Author = request.Author,
-                ImageUrl = request.ImageUrl
-            };
-
+            var blog = new Blog(
+                 new BlogName(request.Name),
+                 request.Description,
+                 request.Author,
+                 request.ImageUrl);
             // return await _repository.CreateAsync(blog);
             var result = await _repository.CreateAsync(blog);
 
             await _mediator.Publish(
                 new BlogCreatedEvent(
                     result.Id,
-                    result.Name));
+                    result.Name.Value));
 
             return result;
         }
