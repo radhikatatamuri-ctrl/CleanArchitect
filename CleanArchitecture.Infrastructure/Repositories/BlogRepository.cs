@@ -53,16 +53,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(int id, Blog blog)
         {
-            /*return await _blogDbContext.Blogs
-                  .Where(model => model.Id == id)
-                  .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(m => m.Id, blog.Id)
-                    .SetProperty(m => m.Name.Value, blog.Name.Value)
-                    .SetProperty(m => m.Description, blog.Description)
-                    .SetProperty(m => m.Author, blog.Author)
-                    .SetProperty(m => m.ImageUrl, blog.ImageUrl)
-                  );*/
-      
+           
             var existingBlog = await _blogDbContext.Blogs
                 .FirstOrDefaultAsync(x => x.Id == id);
 

@@ -72,5 +72,15 @@ namespace CleanArchitecture.Domain.Enitites
                 _comments.Remove(comment);
             }
         }
+
+        public void UpdateComment(int commentId, string content)
+        {
+            var comment = _comments.FirstOrDefault(c => c.Id == commentId);
+
+            if (comment == null)
+                return;
+
+            comment.UpdateContent(content);
+        }
     }
 }

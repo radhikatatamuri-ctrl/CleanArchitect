@@ -9,8 +9,7 @@ namespace CleanArchitecture.Domain.Enitites
         public int Id { get; private set; }
         public int BlogId { get; private set; }
         public string Author {  get; private set; }
-        public string Content { get; private set; }
-
+        public string content { get; set; } = string.Empty;
         private Comment()
         {
         }
@@ -25,7 +24,11 @@ namespace CleanArchitecture.Domain.Enitites
             if (content.Length > 50)
                 throw new ArgumentException("Comment too long");
             Author = author;
-            Content = content;
+            content = content;
+        }
+        public void UpdateContent(string content)
+        {
+            this.content = content;
         }
 
     }

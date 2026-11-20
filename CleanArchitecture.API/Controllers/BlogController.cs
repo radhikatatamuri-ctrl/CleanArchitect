@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.API.Requests;
 using CleanArchitecture.Application.Features.Blogs.Commands;
 using CleanArchitecture.Application.Features.Blogs.Commands.AddComment;
+using CleanArchitecture.Application.Features.Blogs.Commands.UpdateComment;
 using CleanArchitecture.Application.Features.Blogs.Queries;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Domain.Enitites;
@@ -46,7 +47,7 @@ namespace CleanArchitecture.API.Controllers
 
             return Ok(result);
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> Create(Blog blog)
         {
@@ -93,6 +94,21 @@ namespace CleanArchitecture.API.Controllers
             var logs = await _blogDbContext.AuditLogs.ToListAsync();
             return Ok(logs);
         }
+        [HttpPut("{blogId}/comments/{commentId}")]
+        public async Task<IActionResult> UpdateComment(
+            int blogId,
+            int commentId,
+            UpdateCommentRequest request)
+        {
+            var command =
+                  new UpdateCommentCommand(
+                      blogId,
+                      commentId,
+                      request.content);
+            var result= await _mediator.Send(command);
+              return result ? Ok() : NotFound();
+
+        }
 
         [HttpPost("{blogId}/comments")]
         public async Task<IActionResult> AddComment(
@@ -106,6 +122,23 @@ namespace CleanArchitecture.API.Controllers
             await _mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpDelete("{blogId}/comments/{commentId}")]
+        public async Task<IActionResult> RemoveComment(
+    int blogId,
+    int commentId)
+        {
+            var command = new RemoveCommentCommand(
+                blogId,
+                commentId);
+
+            var result = await _mediator.Send(command);
+
+            if (!result)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }
