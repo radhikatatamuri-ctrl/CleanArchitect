@@ -1,5 +1,6 @@
 using Amazon;
 using Amazon.SimpleNotificationService;
+using CleanArchitecture.Api.Middleware;
 using CleanArchitecture.Application.Features.Blogs.Commands;
 using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Application.Services;
@@ -60,7 +61,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseGlobalExceptionHandling();
 app.MapControllers();
 
 app.Run();
