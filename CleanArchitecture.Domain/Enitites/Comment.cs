@@ -24,7 +24,7 @@ namespace CleanArchitecture.Domain.Enitites
             if (content.Length > 50)
                 throw new ArgumentException("Comment too long");
             Author = author;
-            content = content;
+            this.content = content;
         }
         public void UpdateContent(string content)
         {

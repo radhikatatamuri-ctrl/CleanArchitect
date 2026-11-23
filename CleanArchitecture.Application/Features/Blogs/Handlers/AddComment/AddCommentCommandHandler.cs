@@ -31,6 +31,7 @@ namespace CleanArchitecture.Application.Features.Blogs.Handlers.AddComment
 
 
             blog.AddComment(request.Content,request.Author);
+            //throw new Exception("Testing middleware");
 
             await _blogRepository.SaveChangesAsync();
 
