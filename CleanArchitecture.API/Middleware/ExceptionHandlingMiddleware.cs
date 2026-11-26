@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using FluentValidation;
+using System.Net;
 using System.Text.Json;
 
 namespace CleanArchitecture.Api.Middleware;
@@ -21,6 +22,16 @@ public class ExceptionHandlingMiddleware
         try
         {
             await _next(context);
+        }
+        catch (ValidationException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            await context.Response.WriteAsJsonAsync(new
+            {
+                StatusCode = 400,
+                Errors = ex.Errors.Select(x => x.ErrorMessage)
+            });
         }
         catch (Exception ex)
         {

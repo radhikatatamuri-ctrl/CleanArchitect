@@ -26,9 +26,17 @@ namespace CleanArchitecture.Application.Services
             return await _blogRepository.DeleteAsync(id);
         }
 
-        public async Task<List<Blog>> GetAllAsync()
+        /*  public async Task<List<Blog>> GetAllAsync()
+          {
+              return await _blogRepository.GetAllAsync();
+          }*/
+        public async Task<List<Blog>> GetAllAsync(
+      int pageNumber,
+      int pageSize)
         {
-            return await _blogRepository.GetAllAsync();
+            return await _blogRepository.GetAllAsync(
+                pageNumber,
+                pageSize);
         }
 
         public async Task<Blog> GetByIdAsync(int id)

@@ -2,11 +2,13 @@ using Amazon;
 using Amazon.SimpleNotificationService;
 using CleanArchitecture.Api.Middleware;
 using CleanArchitecture.Application.Features.Blogs.Commands;
+using CleanArchitecture.Application.Features.Blogs.Validators;
 using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Domain.Interface;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Repositories;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,10 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(
         typeof(CreateBlogCommand).Assembly);
 });
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBlogCommandValidator>();
+builder.Services.AddTransient(
+    typeof(IPipelineBehavior<,>),
+    typeof(ValidationBehavior<,>));
 builder.Services.AddAWSService<
     Amazon.SimpleNotificationService
     .IAmazonSimpleNotificationService>();

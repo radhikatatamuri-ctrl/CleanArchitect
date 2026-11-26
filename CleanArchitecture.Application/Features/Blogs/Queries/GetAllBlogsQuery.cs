@@ -6,6 +6,9 @@ using System.Text;
 
 namespace CleanArchitecture.Application.Features.Blogs.Queries
 {
-    public record GetAllBlogsQuery()
- : IRequest<List<Blog>>;
+    //   public record GetAllBlogsQuery() : IRequest<List<Blog>>;
+    public record GetAllBlogsQuery(
+       int PageNumber = 1,
+       int PageSize = 10)
+       : IRequest<List<Blog>>;
 }

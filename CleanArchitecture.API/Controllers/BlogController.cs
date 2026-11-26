@@ -27,14 +27,24 @@ namespace CleanArchitecture.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        /*     public async Task<IActionResult> GetAll()
+             {
+                 var result = await _mediator.Send(
+                                  new GetAllBlogsQuery());
+
+                 return Ok(result);
+             }
+        */
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+    int pageNumber = 1,
+    int pageSize = 10)
         {
             var result = await _mediator.Send(
-                             new GetAllBlogsQuery());
+                new GetAllBlogsQuery(pageNumber, pageSize));
 
             return Ok(result);
         }
-
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -49,20 +59,35 @@ namespace CleanArchitecture.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Blog blog)
+        /*   public async Task<IActionResult> Create(Blog blog)
+           {
+               var command = new CreateBlogCommand(
+                   blog.Id,
+                   blog.Name.Value,
+                   blog.Description,
+                   blog.Author,
+                   blog.ImageUrl);
+
+               var result = await _mediator.Send(command);
+
+               return Ok(result);
+           }
+        */
+        [HttpPost]
+        public async Task<IActionResult> Create(
+    CreateBlogRequest request)
         {
             var command = new CreateBlogCommand(
-                blog.Id,
-                blog.Name.Value,
-                blog.Description,
-                blog.Author,
-                blog.ImageUrl);
+                0,
+                request.Name,
+                request.Description,
+                request.Author,
+                request.ImageUrl);
 
             var result = await _mediator.Send(command);
 
             return Ok(result);
         }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Blog updatedBlog)
         {

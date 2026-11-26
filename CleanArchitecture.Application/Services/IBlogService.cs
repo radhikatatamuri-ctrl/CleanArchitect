@@ -9,7 +9,10 @@ namespace CleanArchitecture.Application.Services
 {
     public interface IBlogService
     {
-        Task<List<Blog>> GetAllAsync();
+        //  Task<List<Blog>> GetAllAsync();
+        Task<List<Blog>> GetAllAsync(
+      int pageNumber,
+      int pageSize);
         Task<Blog> GetByIdAsync(int id);
         Task<Blog> CreateAsync(Blog blog);
         Task<int> UpdateAsync(int id, Blog blog);

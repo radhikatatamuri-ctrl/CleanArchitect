@@ -14,10 +14,18 @@ public class GetAllBlogsQueryHandler
         _repository = repository;
     }
 
+    /*   public async Task<List<Blog>> Handle(
+           GetAllBlogsQuery request,
+           CancellationToken cancellationToken)
+       {
+           return await _repository.GetAllAsync();
+       }*/
     public async Task<List<Blog>> Handle(
-        GetAllBlogsQuery request,
-        CancellationToken cancellationToken)
+       GetAllBlogsQuery request,
+       CancellationToken cancellationToken)
     {
-        return await _repository.GetAllAsync();
+        return await _repository.GetAllAsync(
+            request.PageNumber,
+            request.PageSize);
     }
 }
