@@ -39,9 +39,47 @@ namespace CleanArchitecture.Infrastructure.Repositories
             return await _blogDbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Blog>> GetAllAsync()
+        /*   public async Task<List<Blog>> GetAllAsync()
+           {
+               return await _blogDbContext.Blogs.Include(b => b.Comments).ToListAsync();
+           }*/
+        public async Task<List<Blog>> GetAllAsync(
+       int pageNumber,
+       int pageSize,string sortBy,bool descending)
         {
-            return await _blogDbContext.Blogs.Include(b => b.Comments).ToListAsync();
+            /* return await _blogDbContext.Blogs.Include(b => b.Comments)
+                   .OrderBy(b => b.Id)
+                 .Skip((pageNumber - 1) * pageSize)
+                 .Take(pageSize)
+                 .ToListAsync();*/
+            var query = _blogDbContext.Blogs
+     .Include(b => b.Comments)
+     .AsQueryable();
+
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                query = sortBy.ToLower() switch
+                {
+                    "name" => descending
+                        ? query.OrderByDescending(b => b.Name.Value)
+                        : query.OrderBy(b => b.Name.Value),
+
+                    "author" => descending
+                        ? query.OrderByDescending(b => b.Author)
+                        : query.OrderBy(b => b.Author),
+
+                    _ => query.OrderByDescending(b => b.Id)
+                };
+            }
+            else
+            {
+                query = query.OrderByDescending(b => b.Id);
+            }
+
+            return await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<Blog> GetByIdAsync(int id)

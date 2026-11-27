@@ -38,10 +38,11 @@ namespace CleanArchitecture.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(
     int pageNumber = 1,
-    int pageSize = 10)
+    int pageSize = 10,string? sortBy = null,
+    bool descending = false)
         {
             var result = await _mediator.Send(
-                new GetAllBlogsQuery(pageNumber, pageSize));
+                new GetAllBlogsQuery(pageNumber, pageSize,sortBy,descending));
 
             return Ok(result);
         }

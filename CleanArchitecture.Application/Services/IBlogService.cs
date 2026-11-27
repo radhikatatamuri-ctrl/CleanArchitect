@@ -12,7 +12,7 @@ namespace CleanArchitecture.Application.Services
         //  Task<List<Blog>> GetAllAsync();
         Task<List<Blog>> GetAllAsync(
       int pageNumber,
-      int pageSize);
+      int pageSize,string sortBy,bool descending);
         Task<Blog> GetByIdAsync(int id);
         Task<Blog> CreateAsync(Blog blog);
         Task<int> UpdateAsync(int id, Blog blog);

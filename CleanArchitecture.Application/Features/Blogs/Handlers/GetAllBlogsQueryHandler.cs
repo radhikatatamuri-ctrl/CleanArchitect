@@ -26,6 +26,8 @@ public class GetAllBlogsQueryHandler
     {
         return await _repository.GetAllAsync(
             request.PageNumber,
-            request.PageSize);
+            request.PageSize,
+            request.SortBy,
+        request.Descending);
     }
 }

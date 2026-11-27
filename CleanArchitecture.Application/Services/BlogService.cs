@@ -32,11 +32,11 @@ namespace CleanArchitecture.Application.Services
           }*/
         public async Task<List<Blog>> GetAllAsync(
       int pageNumber,
-      int pageSize)
+      int pageSize,string? sortBy,bool descending)
         {
             return await _blogRepository.GetAllAsync(
                 pageNumber,
-                pageSize);
+                pageSize,sortBy,descending);
         }
 
         public async Task<Blog> GetByIdAsync(int id)
